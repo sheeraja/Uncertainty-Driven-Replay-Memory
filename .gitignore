@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Results
+results*
+results_10_seeds
+Additional_Results
+Outputs
+plots
+runs
+tracing
+wandb
+__pycache__
+*.Identifier
+*.out
