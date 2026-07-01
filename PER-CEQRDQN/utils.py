@@ -1,4 +1,3 @@
-
 import random
 import torch.nn.functional as F
 import numpy as np
@@ -152,5 +151,5 @@ def loss_fn(x,y,lamda,kappa,device):
     
     quant_loss = quantile_huber_loss(x,y,device,kappa=kappa) # for distributional RL quantile loss
     cal_loss = batch_cali_loss(y, x, device, lamda)
-    return quant_loss + cal_loss # torch.Size([32, 20])
+    return quant_loss, quant_loss + cal_loss # torch.Size([32, 20])
 

@@ -291,7 +291,7 @@ class PER():
         q_value = out.gather(1, actions.unsqueeze(2).repeat(1,1,self.n_quantiles)).squeeze()
         q_value = torch.clamp(q_value, -100.0, 100.0)
         
-        quantile_losses = self.loss(q_value, td_target, 0.5, self.kappa, self.device)
+        per_td, quantile_losses = self.loss(q_value, td_target, 0.5, self.kappa, self.device)
         loss_evidence = loss_evi(td_target, gamma, v, alpha, beta, self.evi_coeff)
         loss_gamma_cal = gamma_cal_loss(gamma,td_target,0.5,self.device)
 
@@ -302,13 +302,15 @@ class PER():
         # loss = wts_loss.mean(dim=1) # torch.Size([32])
         loss = wts_loss.mean()
 
-        td_errors = torch.abs(td_target - q_value).mean(dim=1)
-        if torch.isnan(td_errors).any():
-            print(f"TD target min: {td_target.min():.2f}; max: {td_target.max():.2f}; mean: {td_target.mean():.2f}")
-            print(f"Q value min: {q_value.min():.2f}; max: {q_value.max():.2f}; mean: {q_value.mean():.2f}")
-            print(f"TD errors min: {td_errors.min():.2f}; max: {td_errors.max():.2f}; mean: {td_errors.mean():.2f}")
+        # td_errors = torch.abs(td_target - q_value).mean(dim=1)
+        # if torch.isnan(td_errors).any():
+        #    print(f"TD target min: {td_target.min():.2f}; max: {td_target.max():.2f}; mean: {td_target.mean():.2f}")
+        #    print(f"Q value min: {q_value.min():.2f}; max: {q_value.max():.2f}; mean: {q_value.mean():.2f}")
+        #    print(f"TD errors min: {td_errors.min():.2f}; max: {td_errors.max():.2f}; mean: {td_errors.mean():.2f}")
+        
+        td_errors = per_td.mean(dim=1)
         self.replay_buffer.update_priorities(idxs, td_errors)
-
+        
         # Update weights
         self.optimizer.zero_grad()
         loss.backward()

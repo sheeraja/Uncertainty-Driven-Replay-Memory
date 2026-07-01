@@ -53,9 +53,7 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                         info = eval(open(base_folder + folder + '/experimental-setup', 'r').read())
                         label = ""
                         for param in label_by:
-                            # label += str(info[param]).replace("CEQRDQN_UA_True_", "Exploit-UDRM_").replace("UACEQRDQN-CartPole_True_", "Exploit-UDRM_")
-                            label += str(info[param]).replace("CEQRDQN_UA_True_", "UDRM_").replace("UACEQRDQN-CartPole_True_", "UDRM_").replace("-CartPole", "").replace("PERCEQRDQN-prop", "CEQRDQN_PER-prop")
-                        # print(f"label: {label}")
+                            label += str(info[param])
                         if label not in score_dict:
                             score_dict[label] = []
                             stats_dict[label] = []
@@ -91,7 +89,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                     score_dict[key] = pd.Series(score_dict[key])
                     model_list.append(score_dict[key])
                 
-                # n_models = len(label_dict.keys())
                 if len(label_dict.keys()) != 0:
                     if list(label_dict.keys())[0] not in all_models:
                         all_models.append(list(label_dict.keys())[0])
@@ -99,11 +96,8 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                 
                 for key in label_dict.keys():
                     scores = np.array(label_dict[key])
-                    # print(f"scores: {scores.shape}")
                     n_seeds = scores.shape[0]
                     mean_scores = np.array(scores).mean(axis=0)
-                    # print(timesteps[:5], scores[:5])
-                    # print(f"mean_scores: {mean_scores.shape}")
                     x_scaled = np.arange(len(mean_scores)) * sample
                     if ngames == 1:
                         line, = ax.plot(x_scaled, mean_scores, label=key)
@@ -111,10 +105,8 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                         line, = ax[idx].plot(x_scaled, mean_scores, label=key)
 
                     line_color = line.get_color()
-                    # print(f"mean: {mean_scores}")
                     if n_seeds > 1:
                         std_scores = np.array(scores).std(axis=0)
-                        # print(f"std: {std_scores}")
                         x_scaled = np.arange(len(std_scores)) * sample
                         lower_bound = mean_scores - 1.96 * std_scores/np.sqrt(n_seeds)
                         upper_bound = mean_scores + 1.96 * std_scores/np.sqrt(n_seeds)
@@ -150,8 +142,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                             ax[idx].text(x_max_label, max_score, f"Max: {max_score:.2f}", color=line_color, va='top', ha='left')
                             ax[idx].text(x_min_label, min_score, f"Min: {min_score:.2f}", color=line_color, va='bottom', ha='right')
 
-                # print(f"ngames: {ngames}")
-                # print(f"all_models: {len(all_models)}")
                 if ngames == 1:
                     ax.set_xlim(0, n_timesteps)
                     ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4, integer=True, steps=[1, 2, 5, 10]))
@@ -179,7 +169,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                     for spine in ax[idx].spines.values():
                         spine.set_linewidth(0.8)
                         spine.set_color('#333333')
-                    # print(f"ncols: {cols_num}")
                     fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.06), ncol=cols_num)
             fig.tight_layout()
             fig.supxlabel("Timestep", fontsize=10, y=0.08)

@@ -53,7 +53,7 @@ class Args:
     """maximum value for calculating the huber loss"""
     gamma: float = 0.99
     """the discount factor gamma"""
-    learning_rate: float = 1e-3
+    learning_rate: float = 1e-4
     """the learning rate of the optimizer"""
     adam_epsilon: float = 1e-8
     """epsilon for Adam optimizer"""
