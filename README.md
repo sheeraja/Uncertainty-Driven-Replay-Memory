@@ -1,7 +1,7 @@
 # Uncertainty-Driven-Replay-Memory
 This repository contains code associated with the paper ***'Uncertainty-Driven Replay Memory for Reinforcement Learning'***
 
-***spec-file.txt*** in the ***UDRM/*** folder can be used to create a virtual environment to run the codes.
+***environment.yml*** in this folder can be used to create a virtual environment to run the scripts.
 
 To train the UDRM on Breakout for 10,000 timesteps, run the following command from the ***UDRM/Env_Atari/*** folder.
 
