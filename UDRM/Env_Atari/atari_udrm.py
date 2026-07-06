@@ -88,8 +88,7 @@ class UDRM():
 
         self.n_quantiles = n_quantiles
         self.train_steps = timesteps
-        # self.explore_steps = int(np.round(0.1 * self.train_steps)) # added
-
+        
         self.env = env
         self.replay_buffer = ReplayBuffer(self.replay_buffer_size)
         self.seed = random.randint(0, 2e8) if seed is None else seed
@@ -128,7 +127,6 @@ class UDRM():
                 'n_quantiles':self.n_quantiles,
                 'train_steps':self.train_steps,
                 'max_episode_steps':self.env.spec.max_episode_steps,
-                # 'explore_steps':self.explore_steps,
                 'weight_scale':self.network.weight_scale,
                 'evidence coeff':self.evi_coeff,
                 'unc_lambda_ep':self.unc_lambda_ep,
@@ -385,20 +383,6 @@ class UDRM():
             0.5*(torch.abs(2 * var_0) + torch.abs(2 * var_1)), 
             dim=1) + 1e-8
 
-        # global_aleatoric = torch.mean(torch.abs(gamma[:,1,:] - gamma[:,0,:]),dim=1)
-        # global_epistemic = torch.mean(0.5*(torch.abs((gamma[:,0,:]+var[:,0,:])-(gamma[:,0,:]-var[:,0,:])) + torch.abs((gamma[:,1,:]+var[:,1,:])-(gamma[:,1,:]-var[:,1,:]))),dim=1) + 1e-8
-
-        # u_ep_act = 10000
-        # u_al_act = 7
-
-        # for al_i in range(len(global_aleatoric)):
-        #     if torch.isinf(global_aleatoric[al_i]):
-        #         global_aleatoric[al_i] = u_al_act
-
-        # for ep_i in range(len(global_epistemic)):
-        #     if torch.isinf(global_epistemic[ep_i]):
-        #         global_epistemic[ep_i] = u_ep_act
-
         #action_means -= self.unc_lambda_al*(global_aleatoric)
         # action_uncertainties_cov = self.unc_lambda_ep*torch.diagflat(global_epistemic)
         cov_matrix = self.unc_lambda_ep * torch.diagflat(global_epistemic)
@@ -407,20 +391,6 @@ class UDRM():
         samples = torch.distributions.multivariate_normal.MultivariateNormal(action_means,covariance_matrix=action_uncertainties_cov).sample()
         action_uncertain = (action_means - self.unc_lambda_ep*global_epistemic).argmax().item()
         action = samples.argmax().item()
-
-        # if torch.isinf(global_epistemic[action]):
-        #     non_inf_ep = global_epistemic[torch.isinf(global_epistemic) == False]
-        #     if len(non_inf_ep) > 0:
-        #         u_ep_act = max(non_inf_ep)
-        # else:
-        #     u_ep_act = global_epistemic[action]
-
-        # if torch.isinf(global_aleatoric[action]):
-        #     non_inf_al = global_aleatoric[torch.isinf(global_aleatoric) == False]
-        #     if len(non_inf_al) > 0:
-        #         u_al_act = max(non_inf_al)
-        # else:
-        #     u_al_act = global_aleatoric[action]
 
         if action == action_means.argmax().item():
             greedy = 1

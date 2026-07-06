@@ -299,15 +299,8 @@ class PER():
 
         weights = weights.unsqueeze(-1) # torch.Size([32, 1])
         wts_loss = weights * total_loss # torch.Size([32, 20])
-        # loss = wts_loss.mean(dim=1) # torch.Size([32])
         loss = wts_loss.mean()
 
-        # td_errors = torch.abs(td_target - q_value).mean(dim=1)
-        # if torch.isnan(td_errors).any():
-        #    print(f"TD target min: {td_target.min():.2f}; max: {td_target.max():.2f}; mean: {td_target.mean():.2f}")
-        #    print(f"Q value min: {q_value.min():.2f}; max: {q_value.max():.2f}; mean: {q_value.mean():.2f}")
-        #    print(f"TD errors min: {td_errors.min():.2f}; max: {td_errors.max():.2f}; mean: {td_errors.mean():.2f}")
-        
         td_errors = per_td.mean(dim=1)
         self.replay_buffer.update_priorities(idxs, td_errors)
         

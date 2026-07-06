@@ -75,7 +75,7 @@ for sd in range(args.n_seeds):
     agent = PER(
                 env,
                 MLP_Toy_CEQRDQN,
-#                 n_quantiles = args.n_quantiles,
+                n_quantiles = args.n_quantiles,
                 timesteps = num_steps,
                 obs_space_channel = obs_space_ch,
                 kappa = args.kappa,
@@ -83,7 +83,6 @@ for sd in range(args.n_seeds):
                 replay_buffer_size = args.buffer_size,
                 gamma = args.gamma,
                 tau = args.tau,
-                # update_target_frequency = args.update_target_frequency,
                 batch_size = args.batch_size,
                 learning_rate = args.learning_rate,
                 adam_epsilon = args.adam_epsilon,
