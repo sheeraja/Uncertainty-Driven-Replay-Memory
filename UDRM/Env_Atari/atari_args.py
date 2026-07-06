@@ -41,8 +41,6 @@ class Args:
     """seed of the experiment"""
     n_seeds: int = 10
     """number of seeds to run the experiments for"""
-    # tau: float = 0.001
-    # """smooth update rate (Polyak averaging) for the target network"""
     batch_size: int = 32
     """the batch size of sample from the reply memory"""
     n_quantiles: int = 50

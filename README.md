@@ -10,7 +10,7 @@ To train the UDRM on Breakout for 10,000 timesteps, run the following command fr
 The script will run for Breakout for 2.5M timesteps for 1 seed, by default. Recalibration intervals are set at 500 for alpha and 5000 for beta. These default values can be modified by the following arguments to the above run command: <br>
 ***--total_timesteps*** => number of timesteps <br>
 ***--game_idx*** => choose a game (0-Asterix, 1-Breakout, 2-Freeway, 3-Seaquest, 4-SpaceInvaders) <br>
-***--seed_end*** => number of seeds (--seed_beg is set to 0 by default) <br>
+***--n_seeds*** => number of seeds <br>
 ***--alpha*** => alpha recalibration interval <br>
 ***--beta*** => beta recalibration interval <br>
 
