@@ -1,19 +1,3 @@
-"""
-Baseline Script: UA-DQN
-Status: ADAPTED BASELINE (STRUCTURAL MODIFICATIONS MADE)
-
-Original Authors: Stutts et al., Clements et al.
-Source: https://github.com/acstutts/CEQR-DQN/tree/main
-License: MIT
-
-Copyright (c) 2020 IndustAI
-Copyright (c) 2024 Alex Christopher Stutts
-Copyright (c) 2026 Sheeraja Rajakrishnan (Modifications for Environmental Adaptation)
-
-Modifications:
-- This script builds directly upon Stutts et al. and provides an independent re-implementation of the baseline functionality originally introduced in Clements et al.
-"""
-
 import random
 import time
 import os
