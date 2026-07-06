@@ -1,18 +1,3 @@
-"""
-Baseline Script: CEQR-DQN
-Status: ADAPTED BASELINE (STRUCTURAL MODIFICATIONS MADE)
-
-Original Authors: Stutts et al.
-Source: https://github.com/acstutts/CEQR-DQN/tree/main
-License: MIT
-
-Copyright (c) 2024 Alex Christopher Stutts
-Copyright (c) 2026 Sheeraja Rajakrishnan (Modifications for Environmental Adaptation)
-
-Modifications:
-- Architectural an hyperparameter changes were made to the baseline model, for environmental adaptation.
-"""
-
 import random
 import time
 import os
