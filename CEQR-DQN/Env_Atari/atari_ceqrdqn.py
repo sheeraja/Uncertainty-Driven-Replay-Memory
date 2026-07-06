@@ -1,20 +1,3 @@
-"""
-Baseline Script: CEQR-DQN
-Status: MODIFIED FOR INSTRUMENTATION
-
-Original Authors: Stutts et al.
-Source: https://github.com/acstutts/CEQR-DQN/tree/main
-License: MIT
-
-Copyright (c) 2024 Alex Christopher Stutts
-Copyright (c) 2026 Sheeraja Rajakrishnan (Modifications only)
-
-Modifications:
-- Added logging and performance tracking hooks.
-- Integrated Weights & Biases for training metrics.
-- No algorithmic or architectural changes were made to the baseline model.
-"""
-
 import random
 import time
 import os
