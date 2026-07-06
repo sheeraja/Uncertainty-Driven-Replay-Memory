@@ -6,10 +6,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.ticker as ticker
 import pandas as pd
-import argparse
+import tyro
+from plot_args import Args
 from datetime import datetime
+
+args = tyro.cli(Args)
          
-def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, min_max, add_stats, log_folder):
+def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, min_max, log_folder):
     n_timesteps = timesteps
     sample = subsample
     base_folders = ndirs
@@ -19,8 +22,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
     
     max_x = n_timesteps / sample
 
-    # print(ngames, games)
-    
     sns.set_theme(style="darkgrid", font_scale=1.5)
     seaborn_title_size = plt.rcParams['axes.titlesize']
     
@@ -29,15 +30,12 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
     else:
         fig, ax = plt.subplots(1, ngames, figsize=(25, 5))
 
-    plot_file = log_folder + "/minmax_" + str(add_min_max) + '.png'
     n_seeds = 0
 
     label_by = ["Notes"]
     with open(log_folder + '/output_log.txt',"w") as f:
         for idx, game in enumerate(games):
             model_list = []
-            # print(f"\n")
-            # print(f"base_folders: {base_folders}")
             for base_folder in base_folders:
                 if game.lower() not in base_folder.lower():
                     continue
@@ -46,7 +44,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                 score_dict = {}
                 stats_dict = {}
                 for folder in folders:
-                    # print(f"game: {game}; folder: {folder}")
                     if game.lower() not in folder.lower():
                         break
                     else:
@@ -68,7 +65,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                         spline = UnivariateSpline(timesteps, scores, k=1, s=0, ext=3)
                         scores = spline(all_timesteps)
                         scores = pd.Series(scores)
-                        # print(f"scores: {scores}")
                         windows = scores.rolling(rolling_window_size)
                         scores = windows.mean()
                         scores = np.where(scores < 0, 0, scores)
@@ -92,7 +88,6 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
                 if len(label_dict.keys()) != 0:
                     if list(label_dict.keys())[0] not in all_models:
                         all_models.append(list(label_dict.keys())[0])
-                # print(f"all_models: {all_models}")
                 
                 for key in label_dict.keys():
                     scores = np.array(label_dict[key])
@@ -177,70 +172,28 @@ def plots(n_models, timesteps, rolling_window, subsample, ndirs, ngames, games, 
             f.write(f"\n-------------------------------------------------------------------------------------------------------------\n")
             print("\n")    
             
-# Create the parser
-parser = argparse.ArgumentParser(description="plots")
-
-# Add arguments
-parser.add_argument("--n_models", type=int, default=4, help="number of models")
-parser.add_argument("--min_max", type=int, default=1, help="add min and max lines")
-parser.add_argument("--add_stats", type=int, default=1, help="add t-test, Anova and Kruskal stats")
-parser.add_argument('--ndirs_atari', nargs='+')
-parser.add_argument('--ndirs_other', nargs='+')
-
 # Parse the arguments
-args = parser.parse_args()
 n_models = args.n_models
-base_folders_atari = args.ndirs_atari
-base_folders_other = args.ndirs_other
-add_min_max = True if args.min_max == 1 else False
-add_stats = True if args.add_stats == 1 else False
-
-base_folders = {
-    'Atari': base_folders_atari,
-    'Other': base_folders_other
-}
-
-all_games = {
-    'Atari': ['Asterix', 'Breakout', 'Freeway', 'Seaquest', 'SpaceInvaders'], 
-    'Other': ['Acrobot', 'CartPole', 'MountainCar', 'FrozenLake']
-}
-
-n_steps = {
-    'Atari': [2500000],
-    'Other': [300000]
-}
-
-subsample = {
-    'Atari': [1000], 
-    'Other': [120]
-}
-
-rolling_window = {
-    'Atari': [100000], 
-    'Other': [12000]
-}
+add_min_max = args.min_max
 
 filedir = os.path.realpath(__file__)
 folder_idx = filedir.rfind("/")
 folder_dir = filedir[:folder_idx+1]
-
 plot_folder = folder_dir + "plots/" + datetime.now().strftime('%Y-%m-%d-%H%M%S')
 print(f"\nplot_folder: {plot_folder}\n")
 
-for k in all_games.keys():
-    games = all_games[k]
-    n_timesteps = n_steps[k]
-    sample = subsample[k]
-    rolling_window_size = rolling_window[k]
-    ndirs = base_folders[k]
-    # print(k, ndirs)
-    if ndirs is not None:
-        ngames = len(games)
-        log_folder = plot_folder + "_results/" + str(k)
-        os.makedirs(log_folder)
-        print(f"Log Folder: {log_folder}\n")
-        plots(n_models, n_timesteps[0], rolling_window_size[0], sample[0], ndirs, ngames, games, add_min_max, add_stats, log_folder)
-        plot_file = log_folder + "/results_" + k + "_minmax_" + str(add_min_max) + '.png'
-        plt.savefig(plot_file, format='png', bbox_inches='tight', dpi=300)
-        print(f"\nFile_name: {plot_file}\n")
+games = ['Asterix', 'Breakout', 'Freeway', 'Seaquest', 'SpaceInvaders']
+n_timesteps = args.n_timesteps
+sample = args.sample
+rolling_window_size = args.rolling_window
+ndirs = args.logdirs
+if ndirs is not None:
+    ngames = len(games)
+    log_folder = plot_folder + "_atari"
+    os.makedirs(log_folder)
+    print(f"Log Folder: {log_folder}\n")
+    plots(n_models, n_timesteps, rolling_window_size, sample, ndirs, ngames, games, add_min_max, log_folder)
+    plot_file = log_folder + "/results_" + "minmax_" + str(add_min_max) + '.png'
+    plt.savefig(plot_file, format='png', bbox_inches='tight', dpi=300)
+    print(f"\nFile_name: {plot_file}\n")
         

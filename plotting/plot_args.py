@@ -11,9 +11,11 @@ class Args:
     """notes regarding the run"""
     
     # Algorithm specific arguments
-    game: str = "Asterix"
-    """name of the game environment"""
-    logdir: list[str] | None = None
+    category: str = 'Atari'
+    """category of games [Atari/Other(Classic Control, Toy Text)]"""
+    games: list[str] = field(default_factory=lambda: ['Asterix', 'Breakout', 'Freeway', 'Seaquest', 'SpaceInvaders'])
+    """names of the game environments"""
+    logdirs: list[str] | None = None
     """the log directories for the experiments"""
     legend: list[str] | None = None
     """name of the atari plot labels (legend)"""
@@ -23,3 +25,9 @@ class Args:
     """grid resolution for the shared uniform grid"""
     n_timesteps: int = 300000
     """timesteps for the game environment"""
+    n_models: int = 4
+    """the number of models that are evaluated"""
+    sample: int = 1000
+    """sampling window size"""
+    rolling_window: int = 1000
+    """rolling window size"""
